@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.example.demo.Data.Repositories.TokenRepo;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ public class RequestFilter extends OncePerRequestFilter  {
 
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
+    private final TokenRepo tokenRepo;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, 
@@ -36,14 +39,14 @@ public class RequestFilter extends OncePerRequestFilter  {
         String username = jwtService.extractUsername(token);
         if(username != null && SecurityContextHolder.getContext().getAuthentication()== null){
             UserDetails user = userDetailsService.loadUserByUsername(username);
-            if(jwtService.isTokenValid(token,user)){
-                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username
-                , user,user.getAuthorities());
+            var isTokenValid = tokenRepo.findByJwt(token).map((t)-> !t.isExpired() && !t.isRevoked()).orElse(false);
+            if(jwtService.isTokenValid(token,user) && isTokenValid){
+                UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(user
+                , null,user.getAuthorities());
                 auth.setDetails(user);
                 SecurityContextHolder.getContext().setAuthentication(auth);
             }
         }
         filterChain.doFilter(request, response);
-
     }
 }

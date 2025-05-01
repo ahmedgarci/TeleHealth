@@ -1,7 +1,16 @@
 package com.example.demo.Data.Entities;
 
-import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,10 +23,25 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuperBuilder
-@Builder
-@Document(collection  = "patients")
+@Entity
 public class Patient extends User {
     private String medicalHistory;
-    private String location;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role authorities;
+
+    @OneToMany(mappedBy = "patient")
+    private List<Appointment> appointments;
+
+    public Collection<? extends GrantedAuthority> getAuthorities(){
+        return List.of(new SimpleGrantedAuthority("ROLE_"+authorities.getRoleName()));
+    }
+    
+    @OneToMany(mappedBy = "sender")
+    private List<Chat> chatsAsSender;
+    
+    @OneToMany(mappedBy = "receiver")
+    private List<Chat> chatsAsReceiver;
 
 }

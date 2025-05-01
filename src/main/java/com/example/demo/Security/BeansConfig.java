@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -20,10 +21,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.example.demo.Data.Entities.Doctor;
 import com.example.demo.Data.Entities.Patient;
-import com.example.demo.Data.Entities.User;
 import com.example.demo.Data.Repositories.DoctorRepo;
 import com.example.demo.Data.Repositories.PatientRepo;
-import com.example.demo.Data.Repositories.UserRepo;
+import com.example.demo.GlobalHandler.Exceptions.CustomEntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,16 +34,14 @@ public class BeansConfig {
     private final DoctorRepo doctorRepo;
 
     @Bean
-    public UserDetailsService userDetailsService(){
+    public UserDetailsService getuserDetailsService(){
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-                Patient patient = patientRepo.findByEmail(username).
-                    orElse(null);
-                if(patient != null){return patient;}
-                Doctor doctor = doctorRepo.findByEmail(username).
-                    orElse(null);
-                if(doctor != null){return doctor;}
+                Optional<Patient> patient = patientRepo.findByEmail(username);
+                if(patient.isPresent()){return patient.get();}
+                Optional<Doctor> doctor = doctorRepo.findByEmail(username);
+                if(doctor.isPresent()){return doctor.get();}
                 throw new UsernameNotFoundException("User not found " + username);
     }
     };
@@ -53,7 +51,7 @@ public class BeansConfig {
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setPasswordEncoder(getPasswordEncoder());
-        authProvider.setUserDetailsService(userDetailsService());
+        authProvider.setUserDetailsService(getuserDetailsService());
         return authProvider;
     }
     @Bean
@@ -68,12 +66,14 @@ public class BeansConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Primary
     @Bean
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000"));
-        configuration.setAllowedMethods(List.of("POST","DELETE","PUT","PATCH"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

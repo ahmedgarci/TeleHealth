@@ -15,7 +15,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-    @Value("${spring.JWT.SECRET_KEY}")
+    @Value("${application.JWT.SECRET_KEY}")
     private String SECRET_KEY;
 
     public String generateToken(UserDetails userDetails){

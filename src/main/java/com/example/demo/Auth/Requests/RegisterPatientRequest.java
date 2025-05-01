@@ -16,7 +16,5 @@ public class RegisterPatientRequest {
     private String password;
     @NotBlank(message = "username is required")
     private String username;
-    @NotBlank(message = "location is required")
-    private String location;
 
 }

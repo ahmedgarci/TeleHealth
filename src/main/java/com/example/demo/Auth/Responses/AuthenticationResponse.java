@@ -9,5 +9,7 @@ import lombok.Setter;
 @Builder
 public class AuthenticationResponse{
     private String Jwt;
-    
+    private String username;
+    private String role;
+    private Integer user_id;
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.demo.Auth.Requests.RegisterDoctorRequest;
 import com.example.demo.Data.Entities.Doctor;
+import com.example.demo.Data.Entities.Role;
 import com.example.demo.Data.Repositories.RoleRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -20,14 +21,16 @@ public class DoctorMapper {
     private final RoleRepository roleRepository;
     
     public Doctor toDoctor(RegisterDoctorRequest request){
+      //  roleRepository.save(Role.builder().roleName("DOCTOR").build());
         return Doctor.builder()
                         .email(request.getEmail())
                         .password(passwordEncoder.encode(request.getPassword()))
                         .username(request.getUsername())
-                        .authorities(List.of(roleRepository.findByRoleName("DOCTOR")))
+                        .authorities(roleRepository.findByRoleName("DOCTOR"))
                         .yearsOfExperience(request.getYearsOfExperience())
                         .specialization(request.getSpecialization())
-                        .location(request.getPlace())
+                    //    .isAccountActive(false)
                         .build();
     }
+
 }
