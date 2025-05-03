@@ -27,6 +27,17 @@ public class UserMapper {
                                     .photo(photoService.readFileFromLocation(doctor.getPhoto()))
                                     .build();
     }
+    
+    public UserResponse FromDoctorToProfileResponse(Doctor doctor){  
+        return UserResponse.builder()
+                                    .id(doctor.getId())
+                                    .specialization(doctor.getSpecialization())
+                                    .username(doctor.getName())
+                                    .photo(photoService.readFileFromLocation(doctor.getPhoto()))
+                                    .build();
+    }
+
+
 
     public UserResponse FromPatientToUserProfileResponse(Patient patient){  
         return UserResponse.builder()

@@ -28,8 +28,5 @@ public class DoctorController {
     public ResponseEntity<List<UserResponse>> getAllDoctors() {
         return ResponseEntity.ok(doctorService.getAllDoctors());
     }
-    
-
-
 
 }

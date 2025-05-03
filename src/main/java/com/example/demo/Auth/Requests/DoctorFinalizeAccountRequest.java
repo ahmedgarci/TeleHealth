@@ -15,4 +15,5 @@ public class DoctorFinalizeAccountRequest {
     @NotBlank(message = "description cant be empty")
     private String description;
 
+    
 }

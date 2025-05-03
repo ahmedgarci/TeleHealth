@@ -25,7 +25,7 @@ public class DoctorService {
     }
 
     public List<UserResponse>getAllDoctors(){
-        return doctorRepo.findAll().stream().map((d)-> userMapper.FromDoctorToUserProfileResponse(d)).toList();
+        return doctorRepo.findAll().stream().map((d)-> userMapper.FromDoctorToProfileResponse(d)).toList();
     }
 
 
