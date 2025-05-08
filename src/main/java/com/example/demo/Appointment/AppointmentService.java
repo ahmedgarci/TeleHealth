@@ -1,5 +1,6 @@
 package com.example.demo.Appointment;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,14 +9,17 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.Appointment.Requests.ApproveAppointmentRequest;
 import com.example.demo.Appointment.Requests.AskForAppointmentRequest;
+import com.example.demo.Appointment.Requests.CreateMeetRequest;
 import com.example.demo.Appointment.Requests.DenyAppointmentRequest;
 import com.example.demo.Appointment.Responses.AppointmentResponse;
 import com.example.demo.Data.Entities.Appointment;
+import com.example.demo.Data.Entities.AppointmentMeet;
 import com.example.demo.Data.Entities.Doctor;
 import com.example.demo.Data.Entities.Patient;
 import com.example.demo.Data.Entities.User;
 import com.example.demo.Data.Enums.AppointmentStatus;
 import com.example.demo.Data.Mappers.Appointments.AppointmentMapper;
+import com.example.demo.Data.Repositories.AppointmentMeetRepo;
 import com.example.demo.Data.Repositories.AppointmentRepo;
 import com.example.demo.Data.Repositories.DoctorRepo;
 import com.example.demo.GlobalHandler.Exceptions.ActionNotAllowed;
@@ -23,6 +27,7 @@ import com.example.demo.GlobalHandler.Exceptions.CustomEntityNotFoundException;
 import com.example.demo.Notifications.Notification;
 import com.example.demo.Notifications.NotificationService;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -31,6 +36,7 @@ public class AppointmentService {
     private final AppointmentRepo appointmentRepo;    
     private final DoctorRepo doctorRepo;
     private final AppointmentMapper appointmentMapper;
+    private final AppointmentMeetRepo meetRepo;
     private final NotificationService notificationService;
 
     public void demandAppointment(AskForAppointmentRequest request,Authentication authentication){
@@ -70,6 +76,25 @@ public class AppointmentService {
         return allAppointments.stream().map((element)->appointmentMapper.tAppointmentResponse(element)).collect(Collectors.toList());    
     }
     
+    public String CreateNewMeet(Authentication authentication,CreateMeetRequest request){
+       Doctor connectedUser = (Doctor) authentication.getPrincipal();
+       Appointment appointment = appointmentRepo.findById(request.getAppointmentId()).orElseThrow(()->new CustomEntityNotFoundException("appointment with id :  was not found"));
+       AppointmentMeet meet = AppointmentMeet.builder().appointment(appointment).doctor(connectedUser).patient(appointment.getPatient()).meetCode(generateRandomCode()).build();        
+       AppointmentMeet saved =meetRepo.save(meet);
+       return saved.getMeetCode();
+    }
+
+
+    private String generateRandomCode(){
+        String caracters = "1234567890";
+        StringBuilder codeBuilder = new StringBuilder();
+        SecureRandom secureRandom = new SecureRandom(); 
+        for(int i=0;i<6;i++){
+            int randomIndex = secureRandom.nextInt(caracters.length());
+            codeBuilder.append(caracters.charAt(randomIndex)); 
+        }
+        return codeBuilder.toString();
+    }
     
 
     

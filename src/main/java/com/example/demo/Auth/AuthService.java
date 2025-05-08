@@ -64,12 +64,8 @@ public class AuthService {
         tokenRepo.save(t);
         return AuthenticationResponse.builder().Jwt(generatedToken).user_id(user.getId())
                 .username(user.getUsername())
-                .role(user.getAuthorities().toString())
+                .role(user.getAuthorities().iterator().next().toString())
         .build();
-    }
-
-    public void LogoutUser(){
-        
     }
     
     public void finalizeAccount(@NotNull MultipartFile file, 
@@ -77,10 +73,6 @@ public class AuthService {
                 DoctorFinalizeAccountRequest request)
         {
         User conntectedUser = (User)authentication.getPrincipal();
-        if(conntectedUser instanceof Patient){
-            //TO DO
-            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            }
         Doctor doctor = doctorRepo.findById(conntectedUser.getId()).orElseThrow(()->new CustomEntityNotFoundException("doctor dont exist with that id"));
         String PhotoPath = photoService.SaveFile(file, doctor.getId());
         doctor.setPhoto(PhotoPath);

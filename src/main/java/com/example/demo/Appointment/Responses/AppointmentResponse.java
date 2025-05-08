@@ -16,7 +16,7 @@ import lombok.Setter;
 public class AppointmentResponse {
     private Integer id;
     private Date date;
-//    private String status;
+    private String meetCode;
     private String patientName;
     private String reason;
 

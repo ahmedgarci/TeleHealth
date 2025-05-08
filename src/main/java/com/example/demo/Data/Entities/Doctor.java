@@ -7,12 +7,10 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -55,4 +53,20 @@ public class Doctor extends User {
 
     @OneToMany(mappedBy = "receiver")
     private List<Chat> chatsAsReceiver;
+
+    @OneToMany(mappedBy = "doctor")
+    private List<AppointmentMeet> meets;
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
