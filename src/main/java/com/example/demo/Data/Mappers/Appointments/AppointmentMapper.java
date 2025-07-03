@@ -27,6 +27,7 @@ public class AppointmentMapper {
                                     .id(appointment.getId())
                                     .patientName(appointment.getPatient().getName())
                                     .reason(appointment.getReason())
+                                    .meetCode(appointment.getMeet() != null ? appointment.getMeet().getMeetCode() : null)
                                     .date(appointment.getAppointmentDate())
                                     .build();
 

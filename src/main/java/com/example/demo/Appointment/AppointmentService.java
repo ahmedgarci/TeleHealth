@@ -1,6 +1,7 @@
 package com.example.demo.Appointment;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import com.example.demo.Data.Entities.Patient;
 import com.example.demo.Data.Entities.User;
 import com.example.demo.Data.Enums.AppointmentStatus;
 import com.example.demo.Data.Mappers.Appointments.AppointmentMapper;
+import com.example.demo.Data.Repositories.AppointmentEntityManager;
 import com.example.demo.Data.Repositories.AppointmentMeetRepo;
 import com.example.demo.Data.Repositories.AppointmentRepo;
 import com.example.demo.Data.Repositories.DoctorRepo;
@@ -38,6 +40,8 @@ public class AppointmentService {
     private final AppointmentMapper appointmentMapper;
     private final AppointmentMeetRepo meetRepo;
     private final NotificationService notificationService;
+    private final AppointmentEntityManager appointmentEntityManager;
+
 
     public void demandAppointment(AskForAppointmentRequest request,Authentication authentication){
             Doctor doctor = doctorRepo.findById(request.getDoctorId()).orElseThrow(()->new CustomEntityNotFoundException("doctor not found"));
@@ -45,6 +49,13 @@ public class AppointmentService {
             appointmentRepo.save(appointmentMapper.toAppointment(request, patient, doctor));        
     }
     
+    public void markAppointmentAsCompleted(@NotNull Integer appointmentId){
+        Appointment appointment = appointmentRepo.findById(appointmentId).orElseThrow(()->new CustomEntityNotFoundException("doctor not found"));
+        appointment.setStatus(AppointmentStatus.COMPLETED);
+        appointmentRepo.save(appointment);
+    }
+
+
     public void denyAppointment(DenyAppointmentRequest request,Authentication authentication){
         Appointment p = appointmentRepo.findById(request.getAppointmentId()).orElseThrow(()->new CustomEntityNotFoundException("doctor not found"));
         Doctor doctor = (Doctor)authentication.getPrincipal();
@@ -67,20 +78,55 @@ public class AppointmentService {
         notificationService.SendNotif(p.getPatient().getId(), new Notification("ur demand was accepted by doctor "+doctor.getName(),true));
     }
 
-    public List<AppointmentResponse> getMyPendingAppointments(Authentication authentication){
-        User user = (User)authentication.getPrincipal();
-        if(user instanceof Patient){
-                throw new ActionNotAllowed("u need to be a doctor !");
+    public List<AppointmentResponse> getAppointmentDemands(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+    
+        if (user instanceof Doctor) {
+            List<Appointment> pendingAppointments = appointmentRepo.findByDoctorAndStatus((Doctor) user, AppointmentStatus.PENDING);
+            return pendingAppointments.stream()
+                    .map(appointmentMapper::tAppointmentResponse)
+                    .collect(Collectors.toList());
         }
-        List<Appointment> allAppointments = appointmentRepo.findByDoctorAndStatus((Doctor) user,AppointmentStatus.PENDING); 
-        return allAppointments.stream().map((element)->appointmentMapper.tAppointmentResponse(element)).collect(Collectors.toList());    
+    
+        if (user instanceof Patient) {
+            List<Appointment> pendingAppointments = appointmentRepo.findByPatientAndStatus((Patient) user, AppointmentStatus.PENDING);
+            return pendingAppointments.stream()
+                    .map(appointmentMapper::tAppointmentResponse)
+                    .collect(Collectors.toList());
+        }    
+        return List.of(); 
     }
     
+    public List<AppointmentResponse> getMyConfirmedAppointments(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+    
+        if (user instanceof Doctor) {
+            List<Appointment> confirmedAppointments = appointmentEntityManager.getTodayAppointmentsUsingDoctorId(user.getId());
+            return confirmedAppointments.stream()
+                    .map(appointmentMapper::tAppointmentResponse)
+                    .collect(Collectors.toList());
+        }
+    
+        if (user instanceof Patient) {
+            List<Appointment> confirmedAppointments = appointmentRepo.findByPatientAndStatus((Patient) user, AppointmentStatus.CONFIRMED);
+            return confirmedAppointments.stream()
+                    .map(appointmentMapper::tAppointmentResponse)
+                    .collect(Collectors.toList());
+        }
+    
+        return List.of();
+    }
+
+
+
+
     public String CreateNewMeet(Authentication authentication,CreateMeetRequest request){
        Doctor connectedUser = (Doctor) authentication.getPrincipal();
        Appointment appointment = appointmentRepo.findById(request.getAppointmentId()).orElseThrow(()->new CustomEntityNotFoundException("appointment with id :  was not found"));
        AppointmentMeet meet = AppointmentMeet.builder().appointment(appointment).doctor(connectedUser).patient(appointment.getPatient()).meetCode(generateRandomCode()).build();        
        AppointmentMeet saved =meetRepo.save(meet);
+       appointment.setMeet(saved);
+       appointmentRepo.save(appointment);
        return saved.getMeetCode();
     }
 
@@ -95,6 +141,8 @@ public class AppointmentService {
         }
         return codeBuilder.toString();
     }
+    
+
     
 
     

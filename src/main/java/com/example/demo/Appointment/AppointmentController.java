@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 
@@ -50,11 +51,25 @@ public class AppointmentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/today")
-    public ResponseEntity<List<AppointmentResponse>> getAllMyAppointments(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getMyPendingAppointments(authentication));
+    @PostMapping("/completed/{appointmentId}")
+    @PreAuthorize("hasRole('DOCTOR')")
+    public ResponseEntity<?> markAppointmentAsCompleted (@PathVariable(name = "appointmentId") Integer appointmentId) {
+        appointmentService.markAppointmentAsCompleted(appointmentId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
+
+    @GetMapping("/demands")
+    public ResponseEntity<List<AppointmentResponse>> getAllAppointmentsDemands(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getAppointmentDemands(authentication));
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<AppointmentResponse>> getAllMyConfirmedAppointments(Authentication authentication) {
+        return ResponseEntity.ok(appointmentService.getMyConfirmedAppointments(authentication));
+    }
+
+    
  
     @PostMapping("/start")
     @PreAuthorize("hasRole('DOCTOR')")

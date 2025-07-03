@@ -17,7 +17,13 @@ import com.example.demo.Data.Enums.AppointmentStatus;
 public interface AppointmentRepo extends JpaRepository<Appointment,Integer>{
     
     List<Appointment> findByDoctorAndStatus(Doctor doctor,AppointmentStatus status);
-    
+
+    @Query(name = AppointmentsConstants.FIND_TODAY_APPOINTMENTS)
+    List<Appointment> findByDoctorAndTodayAppointments(Doctor doctor,AppointmentStatus status);
+   
+    List<Appointment> findByPatientAndStatus(Patient patient,AppointmentStatus status);
+
     @Query(name = AppointmentsConstants.FIND_SCHEDULED_PATIENTS)
     List<Patient> findDoctorScheduledPatients(@Param("doctor_id") Integer doctor_id);
+
 }

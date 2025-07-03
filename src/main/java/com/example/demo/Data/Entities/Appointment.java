@@ -32,7 +32,11 @@ import lombok.Setter;
 @Entity
 @NamedQuery(
     name = AppointmentsConstants.FIND_SCHEDULED_PATIENTS,
-    query = "SELECT DISTINCT a.patient FROM Appointment a WHERE a.doctor.id= :doctor_id  AND  (a.status = CONFIRMED OR a.status = COMPLETED)"
+    query = "SELECT DISTINCT p.patient FROM Appointment p WHERE p.doctor.id= :doctor_id  AND  p.status = CONFIRMED "
+)
+@NamedQuery(
+    name =AppointmentsConstants.FIND_TODAY_APPOINTMENTS,
+    query="SELECT DISTINCT p FROM Appointment p WHERE p.doctor.id = :doctor_id AND appointmentDate >= :today AND appointmentDate < :tomorrowDate AND p.status = CONFIRMED " 
 )
 public class Appointment {
 
@@ -50,6 +54,7 @@ public class Appointment {
     private AppointmentMeet meet;
 
     private Date appointmentDate;
+
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
 
@@ -57,7 +62,7 @@ public class Appointment {
 
     @CreatedDate
     private Date created_at;
-
+    
     private Date updated_at;
 
 }
