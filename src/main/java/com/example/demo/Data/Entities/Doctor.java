@@ -36,12 +36,12 @@ public class Doctor extends User {
     @OneToMany(mappedBy = "doctor")
     private List<Appointment> appointments;
     
-    private Long longtitude;
+    private Double longtitude;
     
-    private Long lattitude;
+    private Double lattitude;
 
     private String photo;
-
+    
     private String description;
 
     public Collection<? extends GrantedAuthority> getAuthorities(){

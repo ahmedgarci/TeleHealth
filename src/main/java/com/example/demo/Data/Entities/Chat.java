@@ -24,7 +24,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 @Setter
 @AllArgsConstructor
@@ -51,20 +53,17 @@ public class Chat {
     private List<Message> messages;
 
     @Transient
-    public String getChatName(Integer senderId) {
+    public String getChatName(Integer senderId) {      
         if (sender.getId().equals(senderId)) {
-            return sender.getName();
+            return receiver.getName();
         }
-        return receiver.getName();
+        return sender.getName();
     }
 
     @Transient
     public String getLastMessage() {
         if (messages != null && !messages.isEmpty()) {
-            if (messages.get(0).getMessagetype() != MessageType.TEXT) {
-                return "attachement";
-            }
-            return messages.get(0).getContent();
+            return messages.get(messages.size()-1).getContent();
         }
         return null;
 

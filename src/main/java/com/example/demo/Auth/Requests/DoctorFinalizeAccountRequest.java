@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 public class DoctorFinalizeAccountRequest {
     @NotNull(message = "lattitude is required")
-    private Long lat;
+    private Double lat;
     @NotNull(message = "longtitude is required")
-    private Long lngt;
+    private Double lngt;
     @NotBlank(message = "description cant be empty")
     private String description;
 
