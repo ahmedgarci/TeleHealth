@@ -21,10 +21,6 @@ jobs:
           java-version: '17'
           cache: 'maven'
 
-- name: Build Java Project
-  run: mvn clean package -DskipTests
-
-
       - name: Build Java Project
         run: |
           chmod a+x ./mvnw
