@@ -22,8 +22,8 @@ jobs:
 
       - name: List files at repo root
         run: |
-        pwd
-        ls -l
+          pwd
+          ls -l
 
       - name: Build Java Project
         run: |
