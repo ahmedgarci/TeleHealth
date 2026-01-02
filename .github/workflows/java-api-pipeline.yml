@@ -22,7 +22,7 @@ jobs:
 
       - name: Compile Project
         run: |
-          cd TelhealthApp/telhealthapp
+          cd telhealthapp
           chmod +x mvnw
           ./mvnw clean package -DskipTests
 
