@@ -27,7 +27,7 @@ jobs:
 
       - name: Build Java Project
         run: |
-          chmod +x mvnw
+          chmod +x ./mvnw
           ./mvnw clean package -DskipTests
 
       - name: Login to Docker Hub
