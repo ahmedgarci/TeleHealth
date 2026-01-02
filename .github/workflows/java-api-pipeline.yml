@@ -20,10 +20,10 @@ jobs:
           java-version: '17'
           distribution: 'corretto'
 
-      - name: ShowFolderSrtucture
+      - name: List files at repo root
         run: |
-          pwd
-          ls -R
+        pwd
+        ls -l
 
       - name: Build Java Project
         run: |
