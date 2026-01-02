@@ -53,7 +53,7 @@ public class ChatService {
         Doctor doctor= (Doctor)authentication.getPrincipal();
         List<Patient> patients = appointmentRepo.findDoctorScheduledPatients(doctor.getId());
         if(patients.isEmpty()){
-            return null;
+            return List.of();
         }
         return patients.stream().map((p)->new ScheduledPatients(p.getId(),p.getName(),p.getUsername())).toList();
 

@@ -43,7 +43,9 @@ public class WebsocketConfig  implements WebSocketMessageBrokerConfigurer{
         MappingJackson2MessageConverter jackson = new MappingJackson2MessageConverter();
         jackson.setObjectMapper(new ObjectMapper());
         jackson.setContentTypeResolver(resolver);
+        // To add the custom converter to the list
         messageConverters.add(jackson);
+        // false so spring wont neglect the default converters
         return false;
     }
     

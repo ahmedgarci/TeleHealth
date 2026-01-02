@@ -32,7 +32,18 @@ import lombok.Setter;
 @Entity
 @NamedQuery(
     name = AppointmentsConstants.FIND_SCHEDULED_PATIENTS,
-    query = "SELECT DISTINCT p.patient FROM Appointment p WHERE p.doctor.id= :doctor_id  AND  p.status = CONFIRMED "
+    query = """
+        SELECT DISTINCT a.patient 
+        FROM Appointment a 
+        WHERE a.doctor.id = :doctor_id 
+          AND a.status = CONFIRMED 
+          AND NOT EXISTS (
+              SELECT 1 
+              FROM Chat c 
+              WHERE (c.sender.id = a.doctor.id AND c.receiver.id = a.patient.id)
+                 OR (c.sender.id = a.patient.id AND c.receiver.id = a.doctor.id)
+          )
+    """
 )
 @NamedQuery(
     name =AppointmentsConstants.FIND_TODAY_APPOINTMENTS,

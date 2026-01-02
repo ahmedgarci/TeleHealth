@@ -18,7 +18,7 @@ public class UserResponse {
     private String specialization;
     private Integer yearsOfExprerience;
     private String description;
-    private double Longtitude;
-    private double altitude; 
+    private Double Longtitude;
+    private Double altitude; 
     private byte[] photo;   
 }
