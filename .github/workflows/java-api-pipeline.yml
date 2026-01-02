@@ -14,20 +14,20 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup JDK 17
+      - name: Setup Maven
         uses: actions/setup-java@v4
         with:
+          distribution: 'temurin'
           java-version: '17'
-          distribution: 'corretto'
+          cache: 'maven'
 
-      - name: List files at repo root
-        run: |
-          pwd
-          ls -l
+- name: Build Java Project
+  run: mvn clean package -DskipTests
+
 
       - name: Build Java Project
         run: |
-          chmod +x ./mvnw
+          chmod a+x ./mvnw
           ./mvnw clean package -DskipTests
 
       - name: Login to Docker Hub
