@@ -27,7 +27,6 @@ jobs:
 
       - name: Build Java Project
         run: |
-          cd telhealthapp
           chmod +x mvnw
           ./mvnw clean package -DskipTests
 
