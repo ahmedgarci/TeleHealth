@@ -23,7 +23,6 @@ import com.example.demo.Data.Entities.Doctor;
 import com.example.demo.Data.Entities.Patient;
 import com.example.demo.Data.Repositories.DoctorRepo;
 import com.example.demo.Data.Repositories.PatientRepo;
-import com.example.demo.GlobalHandler.Exceptions.CustomEntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -39,9 +38,9 @@ public class BeansConfig {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
                 Optional<Patient> patient = patientRepo.findByEmail(username);
-                if(patient.isPresent()){return patient.get();}
+                if(patient.isPresent()) return patient.get();
                 Optional<Doctor> doctor = doctorRepo.findByEmail(username);
-                if(doctor.isPresent()){return doctor.get();}
+                if(doctor.isPresent()) return doctor.get();
                 throw new UsernameNotFoundException("User not found " + username);
     }
     };
@@ -70,7 +69,7 @@ public class BeansConfig {
     @Bean
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:5173","http://localhost:4200"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("*"));

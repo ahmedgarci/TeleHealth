@@ -19,21 +19,17 @@ public class UserMapper {
                                     .id(doctor.getId())
                                     .email(doctor.getEmail())
                                     .username(doctor.getName())
-                                    .specialization(doctor.getSpecialization())
-                                    .yearsOfExprerience(doctor.getYearsOfExperience())
-                                    .Longtitude(doctor.getLongtitude())
-                                    .altitude(doctor.getLattitude())
-                                    .description(doctor.getDescription())
-                                    .photo(photoService.readFileFromLocation(doctor.getPhoto()))
+//                                    .yearsOfExprerience(doctor.getYearsOfExperience())
+  //                                  .description(doctor.getDescription())
+    //                                .photo(photoService.readFileFromLocation(doctor.getPhoto()))
                                     .build();
     }
     
     public UserResponse FromDoctorToProfileResponse(Doctor doctor){  
         return UserResponse.builder()
                                     .id(doctor.getId())
-                                    .specialization(doctor.getSpecialization())
                                     .username(doctor.getName())
-                                    .photo(photoService.readFileFromLocation(doctor.getPhoto()))
+                   //                 .photo(photoService.readFileFromLocation(doctor.getPhoto()))
                                     .build();
     }
 

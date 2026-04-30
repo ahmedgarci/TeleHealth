@@ -1,6 +1,8 @@
 package com.example.demo.GlobalHandler;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +25,12 @@ public class AdviceController {
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ArrayList<ErrorResponse>> handleInvalidInputs(MethodArgumentNotValidException exception){
-        ArrayList<ErrorResponse> response = new ArrayList<>();
-        for(FieldError error: exception.getBindingResult().getFieldErrors()){
-            response.add(new ErrorResponse(error.getDefaultMessage()));             
+    public ResponseEntity<Map<String,String>> handleInvalidInputs(MethodArgumentNotValidException exception){
+        Map<String,String> errors = new HashMap<>();
+        for(FieldError error: exception.getFieldErrors()){
+            errors.put(error.getField(),error.getDefaultMessage());
         }
-        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
     }
 
     

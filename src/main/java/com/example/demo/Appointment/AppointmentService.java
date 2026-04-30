@@ -1,7 +1,6 @@
 package com.example.demo.Appointment;
 
 import java.security.SecureRandom;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +16,7 @@ import com.example.demo.Data.Entities.Appointment;
 import com.example.demo.Data.Entities.AppointmentMeet;
 import com.example.demo.Data.Entities.Doctor;
 import com.example.demo.Data.Entities.Patient;
-import com.example.demo.Data.Entities.User;
+import com.example.demo.Data.Entities.BaseUser;
 import com.example.demo.Data.Enums.AppointmentStatus;
 import com.example.demo.Data.Mappers.Appointments.AppointmentMapper;
 import com.example.demo.Data.Repositories.AppointmentEntityManager;
@@ -79,7 +78,7 @@ public class AppointmentService {
     }
 
     public List<AppointmentResponse> getAppointmentDemands(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+        BaseUser user = (BaseUser) authentication.getPrincipal();
     
         if (user instanceof Doctor) {
             List<Appointment> pendingAppointments = appointmentRepo.findByDoctorAndStatus((Doctor) user, AppointmentStatus.PENDING);
@@ -98,7 +97,7 @@ public class AppointmentService {
     }
     
     public List<AppointmentResponse> getMyConfirmedAppointments(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
+        BaseUser user = (BaseUser) authentication.getPrincipal();
     
         if (user instanceof Doctor) {
             List<Appointment> confirmedAppointments = appointmentEntityManager.getTodayAppointmentsUsingDoctorId(user.getId());

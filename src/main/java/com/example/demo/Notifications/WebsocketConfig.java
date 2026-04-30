@@ -28,7 +28,7 @@ public class WebsocketConfig  implements WebSocketMessageBrokerConfigurer{
         registry.setUserDestinationPrefix("/user");
         registry.setApplicationDestinationPrefixes("/app");
     }
-
+    
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
         registry.addEndpoint("ws")

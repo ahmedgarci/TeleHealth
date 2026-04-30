@@ -9,10 +9,10 @@ import org.springframework.security.core.Authentication;
 
 import com.example.demo.Chat.Responses.ChatResponse;
 import com.example.demo.Chat.Responses.ScheduledPatients;
+import com.example.demo.Data.Entities.BaseUser;
 import com.example.demo.Data.Entities.Chat;
 import com.example.demo.Data.Entities.Doctor;
 import com.example.demo.Data.Entities.Patient;
-import com.example.demo.Data.Entities.User;
 import com.example.demo.Data.Mappers.Chat.ChatMapper;
 import com.example.demo.Data.Repositories.AppointmentRepo;
 import com.example.demo.Data.Repositories.ChatRepo;
@@ -31,7 +31,7 @@ public class ChatService {
     private final AppointmentRepo appointmentRepo;
 
     public List<ChatResponse> getChatsByUserId(Authentication currentUser){
-        User user = (User)currentUser.getPrincipal();
+        BaseUser user = (BaseUser)currentUser.getPrincipal();
         return chatRepo.getChatsByUserId(user.getId()).stream().map((c)->chatMapper.toChatResponse(c, user.getId())).collect(Collectors.toList());
     }
 
@@ -40,11 +40,11 @@ public class ChatService {
          if(chat.isPresent()){
              return chat.get().getId();
          }
-        User sender = userRepo.findById(senderId).orElseThrow(()->new CustomEntityNotFoundException("sender with id : "+senderId+ "was not found"));
-        User receiver = userRepo.findById(receiverId).orElseThrow(()->new CustomEntityNotFoundException("receiver with id : "+receiverId+ "was not found"));
+         BaseUser sender = userRepo.findById(senderId).orElseThrow(()->new CustomEntityNotFoundException("sender with id : "+senderId+ "was not found"));
+         BaseUser receiver = userRepo.findById(receiverId).orElseThrow(()->new CustomEntityNotFoundException("receiver with id : "+receiverId+ "was not found"));
          Chat c = new Chat();
-         c.setReceiver(receiver);
-         c.setSender(sender);
+//         c.setReceiver(receiver);
+  //       c.setSender(sender);
          Chat savedChat = chatRepo.save(c);
          return savedChat.getId();
     }

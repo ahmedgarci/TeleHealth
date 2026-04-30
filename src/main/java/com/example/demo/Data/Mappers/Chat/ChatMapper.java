@@ -12,9 +12,9 @@ public class ChatMapper {
         return ChatResponse.builder()
                 .id(c.getId())
                 .lastMessage(c.getLastMessage())
-                .name(c.getChatName(userId))
-                .sender_Id(c.getSender().getId())
-                .receiverId(c.getReceiver().getId())
+//                .name(c.getChatName(userId))
+ //               .sender_Id(c.getSender().getId())
+   //             .receiverId(c.getReceiver().getId())
                 .lastMessageTime(c.getLastMessageTime())
                 .build();
     }

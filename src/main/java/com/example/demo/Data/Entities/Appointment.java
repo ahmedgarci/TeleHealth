@@ -37,12 +37,7 @@ import lombok.Setter;
         FROM Appointment a 
         WHERE a.doctor.id = :doctor_id 
           AND a.status = CONFIRMED 
-          AND NOT EXISTS (
-              SELECT 1 
-              FROM Chat c 
-              WHERE (c.sender.id = a.doctor.id AND c.receiver.id = a.patient.id)
-                 OR (c.sender.id = a.patient.id AND c.receiver.id = a.doctor.id)
-          )
+         
     """
 )
 @NamedQuery(

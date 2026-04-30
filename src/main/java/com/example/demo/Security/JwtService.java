@@ -19,7 +19,7 @@ public class JwtService {
     private String SECRET_KEY;
 
     public String generateToken(UserDetails userDetails){
-        return  generateToken(userDetails,new HashMap());
+        return  generateToken(userDetails,new HashMap<>());
     }
     public String generateToken(UserDetails userDetails,HashMap<String,Object> extraClaims){
         return  Jwts.builder()
