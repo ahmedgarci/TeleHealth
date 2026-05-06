@@ -18,11 +18,14 @@ import lombok.*;
 @Entity
 @NamedQuery(
     name = ChatConstants.FIND_CHAT_BY_SENDERID_AND_RECEIVERID,
-    query = "SELECT DISTINCT c FROM Chat c WHERE c.sender = :senderId AND c.receiver = :receiverId"
-)
+    query = """
+        SELECT DISTINCT c FROM Chat c
+        WHERE (c.sender.id = :senderId AND c.receiver.id = :receiverId)
+           OR (c.sender.id = :receiverId AND c.receiver.id = :senderId)
+        """)
 @NamedQuery(
-    name = ChatConstants.FIND_CHAT_BY_USER_ID,
-    query = "SELECT DISTINCT c FROM Chat c WHERE c.sender = :userId OR c.receiver = :userId"
+            name = ChatConstants.FIND_CHAT_BY_USER_ID,
+            query = "SELECT DISTINCT c FROM Chat c WHERE c.sender.id = :userId OR c.receiver.id = :userId"
 )
 @EntityListeners(AuditingEntityListener.class)
 public class Chat {
@@ -31,14 +34,15 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private Integer sender;
+    @ManyToOne
+    private Patient sender;
 
-    private Integer receiver;
+    @ManyToOne
+    private Patient receiver;
 
     @OneToMany(mappedBy = "chat", fetch = FetchType.LAZY)
     @OrderBy("created_at ASC")
     private List<Message> messages;
-
 
     @Transient
     public String getLastMessage() {

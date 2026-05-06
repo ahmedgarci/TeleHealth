@@ -8,7 +8,6 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.example.demo.Data.Constants.MessageConstants;
 import com.example.demo.Data.Enums.MessageState;
-import com.example.demo.Data.Enums.MessageType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -52,10 +51,9 @@ public class Message {
     @Enumerated(value = EnumType.STRING)
     private MessageState messageState;
 
-    @Enumerated(value = EnumType.STRING)
-    private MessageType Messagetype;
     @Column(nullable = false)
     private Integer senderId;
+
     @Column(nullable = false)
     private Integer receiverId;
 

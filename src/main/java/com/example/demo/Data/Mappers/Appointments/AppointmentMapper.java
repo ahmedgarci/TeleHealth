@@ -1,37 +1,37 @@
 package com.example.demo.Data.Mappers.Appointments;
 
+
 import org.springframework.stereotype.Component;
 
 import com.example.demo.Appointment.Requests.AskForAppointmentRequest;
 import com.example.demo.Appointment.Responses.AppointmentResponse;
 import com.example.demo.Data.Entities.Appointment;
-import com.example.demo.Data.Entities.Doctor;
 import com.example.demo.Data.Entities.Patient;
 import com.example.demo.Data.Enums.AppointmentStatus;
 
 @Component
 public class AppointmentMapper {
     
-    public Appointment toAppointment(AskForAppointmentRequest request, Patient patient,Doctor doctor){
+    public Appointment toAppointment(AskForAppointmentRequest request, Patient patient){
         return Appointment.builder()
-                          .appointmentDate(request.getAppointmentDate())
                           .status(AppointmentStatus.PENDING)
-                          .reason(request.getAppointmentReason())
-                          .doctor(doctor)
+                          .date(request.getDate())
+                          .time(request.getTime())
+                          .reason(request.getReason())
                           .patient(patient)
                           .build();
     }
 
-    public AppointmentResponse tAppointmentResponse(Appointment appointment){
+    public AppointmentResponse toAppointmentResponse(Appointment appointment){
         return AppointmentResponse.builder()
                                     .id(appointment.getId())
                                     .patientName(appointment.getPatient().getName())
+                                    .time(appointment.getTime())
                                     .reason(appointment.getReason())
-                                    .meetCode(appointment.getMeet() != null ? appointment.getMeet().getMeetCode() : null)
-                                    .date(appointment.getAppointmentDate())
+                                    .patientPhone("96062103")
+//                                    .meetCode(Optional.ofNullable(appointment.getMeet()) .map(Meet::getCode).orElse(null))
                                     .build();
 
     }
-
 
 }

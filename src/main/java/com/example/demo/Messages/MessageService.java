@@ -3,10 +3,12 @@ package com.example.demo.Messages;
 import java.util.List;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Data.Entities.Chat;
 import com.example.demo.Data.Entities.Message;
+import com.example.demo.Data.Entities.Patient;
 import com.example.demo.Data.Enums.MessageState;
 import com.example.demo.Data.Mappers.Messages.MessageMapper;
 import com.example.demo.Data.Repositories.ChatRepo;
@@ -25,15 +27,15 @@ public class MessageService {
     private final MessageMapper mapper;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public void SaveMessage(MessageRequest request){
+    public void SaveMessage(MessageRequest request,Authentication authentication){
+        Patient connectedUser = (Patient)authentication.getPrincipal();
         Chat chat = chatRepo.findById(request.getChatId()).orElseThrow(()->new CustomEntityNotFoundException("chat with id :"+ request.getChatId()+ "was not found"));
         Message message = Message.builder()
                              .content(request.getContent())
                              .chat(chat)
                              .messageState(MessageState.SENT)
-                             .senderId(request.getSenderId())
+                             .senderId(connectedUser.getId())
                              .receiverId(request.getReceiverId())
-                             .Messagetype(request.getMessageType())   
                             .build();
         messageRepo.save(message);
         simpMessagingTemplate.convertAndSendToUser(request.getReceiverId().toString(), "/messages", mapper.toMessageResponse(message));

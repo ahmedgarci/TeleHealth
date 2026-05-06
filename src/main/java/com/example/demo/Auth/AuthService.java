@@ -11,7 +11,6 @@ import com.example.demo.Auth.Requests.AuthenticateRequest;
 import com.example.demo.Auth.Requests.RegisterPatientRequest;
 import com.example.demo.Auth.Responses.AuthenticationResponse;
 import com.example.demo.Data.Entities.BaseUser;
-import com.example.demo.Data.Entities.Doctor;
 import com.example.demo.Data.Entities.Patient;
 import com.example.demo.Data.Entities.Token;
 import com.example.demo.Data.Mappers.Auth.PatientMapper;
@@ -43,51 +42,29 @@ public class AuthService {
     // }
 
     public AuthenticationResponse LoginUser(AuthenticateRequest request){
-
         var authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
-    
+
         BaseUser user = (BaseUser) authentication.getPrincipal();
 
+        System.out.println("user was found  !              aaaaaaaaaaaa");
 
         final String generatedToken = jwtService.generateToken(user);
     
-        RevokeAllUserToken(user);
-        
-        String userType;
-
-        if (user instanceof Patient) {
-            userType = "PATIENT";
-        } else if (user instanceof Doctor) {
-            userType = "DOCTOR";
-        } else {
-            userType = "UNKNOWN";
-        }
-    
+        RevokeAllUserToken(user);    
 
         Token t = Token.builder()
                 .jwt(generatedToken)
                 .build();
-        if (userType.equals("PATIENT")) {
-            t.setPatient((Patient) user);
-        }else{
-            t.setDoctor((Doctor)user);
-        }
 
         tokenRepo.save(t);
-    
-        String role = user.getAuthorities()
-                .stream()
-                .findFirst()
-                .map(a -> a.getAuthority())
-                .orElse("UNKNOWN");
     
         return AuthenticationResponse.builder()
                 .Jwt(generatedToken)
                 .user_id(user.getId())
                 .username(user.getUsername())
-                .role(role)
+                .role(user.getRole().toString())
                 .build();
     }
     

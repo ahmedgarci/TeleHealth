@@ -1,6 +1,8 @@
 package com.example.demo.Data.Entities;
 
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -30,19 +32,19 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-@NamedQuery(
-    name = AppointmentsConstants.FIND_SCHEDULED_PATIENTS,
-    query = """
-        SELECT DISTINCT a.patient 
-        FROM Appointment a 
-        WHERE a.doctor.id = :doctor_id 
-          AND a.status = CONFIRMED 
+// @NamedQuery(
+//     name = AppointmentsConstants.FIND_SCHEDULED_PATIENTS,
+//     query = """
+//         SELECT DISTINCT a.patient 
+//         FROM Appointment a 
+//         WHERE a.doctor.id = :doctor_id 
+//           AND a.status = CONFIRMED 
          
-    """
-)
+//     """
+// )
 @NamedQuery(
-    name =AppointmentsConstants.FIND_TODAY_APPOINTMENTS,
-    query="SELECT DISTINCT p FROM Appointment p WHERE p.doctor.id = :doctor_id AND appointmentDate >= :today AND appointmentDate < :tomorrowDate AND p.status = CONFIRMED " 
+    name =AppointmentsConstants.FIND_APPOINTMENTS_BY_STATUS,
+    query="SELECT DISTINCT p FROM Appointment p WHERE date >= :today AND date < :tomorrowDate AND p.status = :status " 
 )
 public class Appointment {
 
@@ -51,15 +53,15 @@ public class Appointment {
     private Integer id;
     
     @ManyToOne
-    private Doctor doctor;
-
-    @ManyToOne
     private Patient patient;
 
     @OneToOne(fetch = FetchType.EAGER)
     private AppointmentMeet meet;
 
-    private Date appointmentDate;
+    private LocalDate date;
+
+    private LocalTime time;
+   
 
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;

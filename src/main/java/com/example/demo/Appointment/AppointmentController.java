@@ -3,10 +3,8 @@ package com.example.demo.Appointment;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.Appointment.Requests.ApproveAppointmentRequest;
 import com.example.demo.Appointment.Requests.AskForAppointmentRequest;
 import com.example.demo.Appointment.Requests.CreateMeetRequest;
-import com.example.demo.Appointment.Requests.DenyAppointmentRequest;
 import com.example.demo.Appointment.Responses.AppointmentResponse;
 
 import jakarta.validation.Valid;
@@ -21,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
@@ -31,37 +30,34 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class AppointmentController {
     private final AppointmentService appointmentService;
     
-    @PostMapping("/demand")
+    @PostMapping()
     public ResponseEntity<?> askForAppointment(@Valid @RequestBody AskForAppointmentRequest request,Authentication auth) {
         appointmentService.demandAppointment(request, auth);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/deny")
-    @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> denyAppointment(@Valid @RequestBody DenyAppointmentRequest request,Authentication auth) {
-        appointmentService.denyAppointment(request, auth);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PatchMapping("/deny/{appointmentId}")
+    public ResponseEntity<?> denyAppointment(@PathVariable(name = "appointmentId",required = true) Integer appointmentId ) {
+        appointmentService.denyAppointment(appointmentId);
+        return ResponseEntity.ok().build();
     }
     
-    @PostMapping("/approve")
-    @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> approveAppointment(@Valid @RequestBody ApproveAppointmentRequest request,Authentication auth) {
-        appointmentService.approveAppointment(request, auth);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PatchMapping("/approve/{appointmentId}")
+    public ResponseEntity<?> approveAppointment(@PathVariable(name = "appointmentId",required = true) Integer appointmentId) {
+        appointmentService.approveAppointment(appointmentId);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/completed/{appointmentId}")
-    @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<?> markAppointmentAsCompleted (@PathVariable(name = "appointmentId") Integer appointmentId) {
         appointmentService.markAppointmentAsCompleted(appointmentId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
 
-    @GetMapping("/demands")
-    public ResponseEntity<List<AppointmentResponse>> getAllAppointmentsDemands(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getAppointmentDemands(authentication));
+    @GetMapping("/requests")
+    public ResponseEntity<List<AppointmentResponse>> getAllAppointmentsDemands() {
+        return ResponseEntity.ok(appointmentService.getAppointmentDemands());
     }
 
     @GetMapping()

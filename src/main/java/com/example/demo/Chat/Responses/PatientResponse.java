@@ -11,9 +11,8 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduledPatients {
+public class PatientResponse {
 
     private Integer user_id;
     private String username;
-    private String email;
 }

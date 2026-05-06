@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.Chat.Responses.ChatResponse;
-import com.example.demo.Chat.Responses.ScheduledPatients;
+import com.example.demo.Chat.Responses.PatientResponse;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +24,9 @@ public class ChatController {
     private final ChatService chatService;
     
     @PostMapping
-    public ResponseEntity<String> createChat(@RequestParam(name = "sender_id") Integer senderId , 
-                                            @RequestParam(name ="receiver_id" ) Integer receiverId){
-    String chatId =chatService.createChat(senderId, receiverId);
-
-        return ResponseEntity.ok(chatId);
+    public ResponseEntity<?> createChat( @RequestParam(name ="receiver_id" ) Integer receiverId,Authentication authentication){
+        chatService.createChat(receiverId,authentication);
+        return ResponseEntity.accepted().build();
     }
 
     @GetMapping
@@ -36,8 +34,8 @@ public class ChatController {
         return ResponseEntity.ok(chatService.getChatsByUserId(authentication));
     }
 
-    @GetMapping("/myPatients")
-    public ResponseEntity<List<ScheduledPatients>> getScheduledPatients(Authentication authentication) {
+    @GetMapping("/available")
+    public ResponseEntity<List<PatientResponse>> getPatientsWithNoChats(Authentication authentication) {
         return ResponseEntity.ok(chatService.getPatients(authentication));
     }
     

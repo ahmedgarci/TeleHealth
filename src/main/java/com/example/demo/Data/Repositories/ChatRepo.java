@@ -13,6 +13,7 @@ import com.example.demo.Data.Entities.Chat;
 
 @Repository
 public interface ChatRepo extends JpaRepository<Chat,String>{
+    
     @Query(name=ChatConstants.FIND_CHAT_BY_USER_ID)
     List<Chat> getChatsByUserId(@Param("userId") Integer userId);
 

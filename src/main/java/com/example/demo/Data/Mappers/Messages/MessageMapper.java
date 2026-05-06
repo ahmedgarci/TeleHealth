@@ -14,9 +14,6 @@ public class MessageMapper {
                 .content(m.getContent())
                 .receiverId(m.getReceiverId())
                 .senderId(m.getSenderId())
-                .messageType(m.getMessagetype())
-                .messageType(m.getMessagetype())
-                //TO DO MEDIA
                 .build();
     }   
 

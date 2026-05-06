@@ -6,15 +6,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.Messages.Requests.MessageRequest;
 import com.example.demo.Messages.Responses.MessageResponse;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -28,13 +27,13 @@ public class MessageController {
     private final MessageService messageService;
 
     @MessageMapping("/send")
-    public void SaveMessage(@Payload MessageRequest request){
-        messageService.SaveMessage(request);
+    public void SaveMessage(@Payload MessageRequest request,Authentication authentication){
+        messageService.SaveMessage(request,authentication);
     }
 
 
-    @GetMapping("/chat/{id}")
-    public ResponseEntity<List<MessageResponse>> getAllMessages(@PathVariable("id") String ChatId) {
+    @GetMapping("/{id}")
+    public ResponseEntity<List<MessageResponse>> getAllMessages(@PathVariable(name="id" , required = true ) String ChatId) {
         return ResponseEntity.ok(messageService.findAllChatMessages(ChatId));
     }
 

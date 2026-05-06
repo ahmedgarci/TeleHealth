@@ -2,9 +2,7 @@ package com.example.demo.Data.Mappers.UserProfile;
 
 import org.springframework.stereotype.Component;
 
-import com.example.demo.Data.Entities.Doctor;
 import com.example.demo.Data.Entities.Patient;
-import com.example.demo.Photo.PhotoService;
 import com.example.demo.User.Profile.Responses.UserResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -12,28 +10,6 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class UserMapper {
-    private final PhotoService photoService;
-
-    public UserResponse FromDoctorToUserProfileResponse(Doctor doctor){  
-        return UserResponse.builder()
-                                    .id(doctor.getId())
-                                    .email(doctor.getEmail())
-                                    .username(doctor.getName())
-//                                    .yearsOfExprerience(doctor.getYearsOfExperience())
-  //                                  .description(doctor.getDescription())
-    //                                .photo(photoService.readFileFromLocation(doctor.getPhoto()))
-                                    .build();
-    }
-    
-    public UserResponse FromDoctorToProfileResponse(Doctor doctor){  
-        return UserResponse.builder()
-                                    .id(doctor.getId())
-                                    .username(doctor.getName())
-                   //                 .photo(photoService.readFileFromLocation(doctor.getPhoto()))
-                                    .build();
-    }
-
-
 
     public UserResponse FromPatientToUserProfileResponse(Patient patient){  
         return UserResponse.builder()

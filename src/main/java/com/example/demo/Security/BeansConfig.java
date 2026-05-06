@@ -1,7 +1,6 @@
 package com.example.demo.Security;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,31 +18,26 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.example.demo.Data.Entities.Doctor;
 import com.example.demo.Data.Entities.Patient;
-import com.example.demo.Data.Repositories.DoctorRepo;
 import com.example.demo.Data.Repositories.PatientRepo;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
 public class BeansConfig {
     private final PatientRepo patientRepo;
-    private final DoctorRepo doctorRepo;
 
     @Bean
     public UserDetailsService getuserDetailsService(){
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-                Optional<Patient> patient = patientRepo.findByEmail(username);
-                if(patient.isPresent()) return patient.get();
-                Optional<Doctor> doctor = doctorRepo.findByEmail(username);
-                if(doctor.isPresent()) return doctor.get();
-                throw new UsernameNotFoundException("User not found " + username);
-    }
-    };
+                Patient patient = patientRepo.findByEmail(username).orElseThrow(()-> new EntityNotFoundException("user was not found"));
+                return patient;
+        }
+        };
     }
 
     @Bean

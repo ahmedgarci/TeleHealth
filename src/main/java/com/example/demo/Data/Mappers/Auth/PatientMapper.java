@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.example.demo.Auth.Requests.RegisterPatientRequest;
 import com.example.demo.Data.Entities.Patient;
+import com.example.demo.Data.Enums.Role;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,6 +20,7 @@ public class PatientMapper {
         return Patient.builder()
                         .email(request.email())
                         .password(passwordEncoder.encode(request.password()))
+                        .role(Role.PATIENT)
                         .username(request.username())
                         .build();
     }

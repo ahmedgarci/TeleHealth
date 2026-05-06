@@ -34,9 +34,6 @@ public class AppointmentMeet {
 
     @Column(nullable = false)
     private String meetCode;
-    
-    @ManyToOne
-    private Doctor doctor;
 
     @OneToOne
     private Appointment appointment;

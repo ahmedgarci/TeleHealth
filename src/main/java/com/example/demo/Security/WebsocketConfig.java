@@ -1,4 +1,4 @@
-package com.example.demo.Notifications;
+package com.example.demo.Security;
 
 import java.util.List;
 
@@ -7,11 +7,13 @@ import org.springframework.http.MediaType;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import com.example.demo.Data.Repositories.PatientRepo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -22,18 +24,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebsocketConfig  implements WebSocketMessageBrokerConfigurer{
     
+    private final JwtService jwtService;
+    private final PatientRepo patientRepo;
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry){
-        registry.enableSimpleBroker("/user");
+        registry.enableSimpleBroker("/queue");
         registry.setUserDestinationPrefix("/user");
         registry.setApplicationDestinationPrefixes("/app");
     }
     
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry){
-        registry.addEndpoint("ws")
-                .setAllowedOrigins("*");
-             //   .withSockJS();
+        registry.addEndpoint("/ws")
+                .setAllowedOrigins("http://localhost:4200");
     }
 
     @Override
@@ -48,6 +52,11 @@ public class WebsocketConfig  implements WebSocketMessageBrokerConfigurer{
         // false so spring wont neglect the default converters
         return false;
     }
+
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        registration.interceptors( new WebsocketInterceptorConfig(jwtService,patientRepo));
+    }
+
     
 
 
