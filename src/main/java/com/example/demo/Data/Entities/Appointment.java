@@ -44,7 +44,7 @@ import lombok.Setter;
 // )
 @NamedQuery(
     name =AppointmentsConstants.FIND_APPOINTMENTS_BY_STATUS,
-    query="SELECT DISTINCT p FROM Appointment p WHERE date >= :today AND date < :tomorrowDate AND p.status = :status " 
+    query="SELECT DISTINCT p FROM Appointment p WHERE date >= :today AND date < :tomorrowDate AND p.status != :status " 
 )
 public class Appointment {
 
@@ -53,7 +53,7 @@ public class Appointment {
     private Integer id;
     
     @ManyToOne
-    private Patient patient;
+    private User patient;
 
     @OneToOne(fetch = FetchType.EAGER)
     private AppointmentMeet meet;

@@ -32,7 +32,7 @@ import lombok.Setter;
 @Entity
 @NamedQuery(
     name = TokenConstants.FIND_ALL_VALID_TOKENS_BY_USER,
-    query = "SELECT t FROM Token t WHERE (patient.id = :userId)   And (t.revoked= false OR  t.expired=false )"
+    query = "SELECT t FROM Token t WHERE (user.id = :userId)   And (t.revoked= false OR  t.expired=false )"
 )
 @EntityListeners(AuditingEntityListener.class)
 public class Token {
@@ -50,8 +50,8 @@ public class Token {
     private boolean expired;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id")
-    private Patient patient;
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @PrePersist
     private void initEntity(){

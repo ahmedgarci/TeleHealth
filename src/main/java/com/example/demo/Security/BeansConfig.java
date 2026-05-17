@@ -18,8 +18,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.example.demo.Data.Entities.Patient;
-import com.example.demo.Data.Repositories.PatientRepo;
+import com.example.demo.Data.Entities.User;
+import com.example.demo.Data.Repositories.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,14 +27,14 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class BeansConfig {
-    private final PatientRepo patientRepo;
+    private final UserRepository userRepository;
 
     @Bean
     public UserDetailsService getuserDetailsService(){
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-                Patient patient = patientRepo.findByEmail(username).orElseThrow(()-> new EntityNotFoundException("user was not found"));
+                User patient = userRepository.findByEmail(username).orElseThrow(()-> new EntityNotFoundException("user was not found"));
                 return patient;
         }
         };

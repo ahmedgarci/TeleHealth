@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class UserProfileController {
     private final ProfileService profileService;
 
-    @GetMapping("/me")
+    @GetMapping
     public ResponseEntity<UserResponse> getUserDetails(Authentication authentication){
         return ResponseEntity.ok(profileService.getUserInfo(authentication));
     }

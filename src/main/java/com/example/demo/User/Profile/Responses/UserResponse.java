@@ -12,13 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class UserResponse {
-    private Integer id;
     private String email;
-    private String username;
-    private String specialization;
-    private Integer yearsOfExprerience;
-    private String description;
-    private Double Longtitude;
-    private Double altitude; 
-    private byte[] photo;   
+    private String username; 
+    private Long phoneNumber;
 }

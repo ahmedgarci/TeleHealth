@@ -39,7 +39,7 @@ public class AppointmentMeet {
     private Appointment appointment;
 
     @ManyToOne
-    private Patient patient;
+    private User user;
 
     @CreatedDate
     private LocalDateTime created_at;

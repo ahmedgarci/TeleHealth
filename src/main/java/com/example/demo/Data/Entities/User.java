@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @Entity
-public class Patient extends BaseUser {
+public class User extends BaseEntity {
 
 
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
@@ -33,10 +33,10 @@ public class Patient extends BaseUser {
     @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY)
     private List<Chat> chatsAsReceiver;
 
-    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<AppointmentMeet> meets;
 
-    @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Token> tokens;
 
     public Collection<? extends GrantedAuthority> getAuthorities() {

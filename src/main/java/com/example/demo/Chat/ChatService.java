@@ -9,12 +9,11 @@ import org.springframework.security.core.Authentication;
 
 import com.example.demo.Chat.Responses.ChatResponse;
 import com.example.demo.Chat.Responses.PatientResponse;
-import com.example.demo.Data.Entities.BaseUser;
 import com.example.demo.Data.Entities.Chat;
-import com.example.demo.Data.Entities.Patient;
+import com.example.demo.Data.Entities.User;
 import com.example.demo.Data.Mappers.Chat.ChatMapper;
 import com.example.demo.Data.Repositories.ChatRepo;
-import com.example.demo.Data.Repositories.PatientRepo;
+import com.example.demo.Data.Repositories.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,16 +24,16 @@ public class ChatService {
 
     private final ChatRepo chatRepo;    
     private final ChatMapper chatMapper;
-    private final PatientRepo patientRepo;
+    private final UserRepository userRepository;
 
     public List<ChatResponse> getChatsByUserId(Authentication currentUser){
-        BaseUser user = (BaseUser)currentUser.getPrincipal();
+        User user = (User)currentUser.getPrincipal();
         return chatRepo.getChatsByUserId(user.getId()).stream().map((c)->chatMapper.toChatResponse(c, user.getId())).collect(Collectors.toList());
     }
 
     public void createChat(Integer receiverId,Authentication authentication){
-        Patient connectedUser = (Patient)authentication.getPrincipal();
-        Patient receiver = patientRepo.findById(receiverId).orElseThrow(()->new EntityNotFoundException("receiver with id : "+receiverId+ "was not found"));
+        User connectedUser = (User)authentication.getPrincipal();
+        User receiver = userRepository.findById(receiverId).orElseThrow(()->new EntityNotFoundException("receiver with id : "+receiverId+ "was not found"));
         Optional<Chat> chat = chatRepo.findChatByReceiverAndSenderId(connectedUser.getId(),receiverId);
         if(chat.isPresent())return;              
         Chat c = new Chat();
@@ -44,13 +43,11 @@ public class ChatService {
     }
 
     public List<PatientResponse> getPatients(Authentication authentication){
-
-        List<Patient> patients = patientRepo.findPatientWithNoChat();
+        List<User> patients = userRepository.findPatientWithNoChat();
         if(patients.isEmpty()){
             return List.of();
         }
         return patients.stream().map((p)->new PatientResponse(p.getId(),p.getName())).toList();
-
     }
 
 

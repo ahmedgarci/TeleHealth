@@ -26,7 +26,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @MappedSuperclass
 @SuperBuilder
-public abstract class BaseUser implements UserDetails{
+public abstract class BaseEntity implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Integer id;

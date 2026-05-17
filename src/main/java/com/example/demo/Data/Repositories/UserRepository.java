@@ -7,13 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.example.demo.Data.Entities.Patient;
+import com.example.demo.Data.Entities.User;
 @Repository
-public interface PatientRepo extends JpaRepository<Patient,Integer>{
-    Optional<Patient> findByEmail(String email);
+public interface UserRepository extends JpaRepository<User,Integer>{
+    Optional<User> findByEmail(String email);
 
     @Query(value = """
         select * from patient as p where p.id not in (select distinct sender_id from chat  Union All select distinct receiver_id from chat );
             """,nativeQuery = true)
-    List<Patient> findPatientWithNoChat();
+    List<User> findPatientWithNoChat();
 }

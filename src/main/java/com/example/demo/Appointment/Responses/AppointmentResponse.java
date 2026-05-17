@@ -20,5 +20,5 @@ public class AppointmentResponse {
     private String patientPhone;
     private String patientName;
     private String reason;
-
+    private String status;
 }

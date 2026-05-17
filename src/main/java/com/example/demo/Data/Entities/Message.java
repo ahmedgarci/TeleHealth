@@ -35,7 +35,7 @@ import lombok.Setter;
 @Entity
 @NamedQuery(
     name = MessageConstants.FindMessagesByChatId,
-    query = "SELECT m FROM Message m WHERE m.chat.id = :ChatId ORDER BY m.created_at DESC"
+    query = "SELECT m FROM Message m WHERE m.chat.id = :ChatId "
 )
 @EntityListeners(AuditingEntityListener.class)
 public class Message {

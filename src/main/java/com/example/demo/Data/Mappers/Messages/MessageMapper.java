@@ -1,11 +1,12 @@
 package com.example.demo.Data.Mappers.Messages;
 
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Data.Entities.Message;
 import com.example.demo.Messages.Responses.MessageResponse;
 
-@Service
+@Component
 public class MessageMapper {
     
     public MessageResponse toMessageResponse(Message m){

@@ -35,10 +35,10 @@ public class Chat {
     private String id;
 
     @ManyToOne
-    private Patient sender;
+    private User sender;
 
     @ManyToOne
-    private Patient receiver;
+    private User receiver;
 
     @OneToMany(mappedBy = "chat", fetch = FetchType.LAZY)
     @OrderBy("created_at ASC")

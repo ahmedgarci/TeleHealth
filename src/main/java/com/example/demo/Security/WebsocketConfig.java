@@ -13,7 +13,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import com.example.demo.Data.Repositories.PatientRepo;
+import com.example.demo.Data.Repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -25,11 +25,11 @@ import lombok.RequiredArgsConstructor;
 public class WebsocketConfig  implements WebSocketMessageBrokerConfigurer{
     
     private final JwtService jwtService;
-    private final PatientRepo patientRepo;
+    private final UserRepository userRepository;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry){
-        registry.enableSimpleBroker("/queue");
+        registry.enableSimpleBroker("/topic");
         registry.setUserDestinationPrefix("/user");
         registry.setApplicationDestinationPrefixes("/app");
     }
@@ -54,7 +54,7 @@ public class WebsocketConfig  implements WebSocketMessageBrokerConfigurer{
     }
 
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors( new WebsocketInterceptorConfig(jwtService,patientRepo));
+        registration.interceptors( new WebsocketInterceptorConfig(jwtService,userRepository));
     }
 
     

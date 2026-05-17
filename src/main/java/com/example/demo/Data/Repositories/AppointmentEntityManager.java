@@ -27,7 +27,7 @@ public class AppointmentEntityManager {
 
         TypedQuery<Appointment> queryy = entityManager.createNamedQuery(AppointmentsConstants.FIND_APPOINTMENTS_BY_STATUS, Appointment.class)
 
-        .setParameter("status", AppointmentStatus.CONFIRMED)
+        .setParameter("status", AppointmentStatus.CANCELLED)
 
         .setParameter("today",localDate)
 

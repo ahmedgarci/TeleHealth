@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class AppointmentController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/completed/{appointmentId}")
+    @PatchMapping("/completed/{appointmentId}")
     public ResponseEntity<?> markAppointmentAsCompleted (@PathVariable(name = "appointmentId") Integer appointmentId) {
         appointmentService.markAppointmentAsCompleted(appointmentId);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -62,16 +63,14 @@ public class AppointmentController {
 
     @GetMapping()
     public ResponseEntity<List<AppointmentResponse>> getAllMyConfirmedAppointments(Authentication authentication) {
-        return ResponseEntity.ok(appointmentService.getMyConfirmedAppointments(authentication));
+        return ResponseEntity.ok(appointmentService.getDoctorAppointments(authentication));
     }
 
     
  
     @PostMapping("/start")
-    @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<?> startAppointment(Authentication auth,@Valid @RequestBody CreateMeetRequest request) {
-        System.out.println(request.getAppointmentId());
-        return ResponseEntity.ok(appointmentService.CreateNewMeet(auth, request));
+        return ResponseEntity.ok(Map.of("roomId",appointmentService.CreateNewMeet(auth, request)));
     }
 
 

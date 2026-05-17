@@ -10,12 +10,11 @@ import org.springframework.stereotype.Service;
 import com.example.demo.Auth.Requests.AuthenticateRequest;
 import com.example.demo.Auth.Requests.RegisterPatientRequest;
 import com.example.demo.Auth.Responses.AuthenticationResponse;
-import com.example.demo.Data.Entities.BaseUser;
-import com.example.demo.Data.Entities.Patient;
 import com.example.demo.Data.Entities.Token;
-import com.example.demo.Data.Mappers.Auth.PatientMapper;
-import com.example.demo.Data.Repositories.PatientRepo;
+import com.example.demo.Data.Entities.User;
+import com.example.demo.Data.Mappers.Auth.UserMapper;
 import com.example.demo.Data.Repositories.TokenRepo;
+import com.example.demo.Data.Repositories.UserRepository;
 import com.example.demo.Security.JwtService;
 
 import lombok.RequiredArgsConstructor;
@@ -26,14 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthService {
     private final AuthenticationManager authenticationManager;
-    private final PatientRepo patientRepo;
-    private final PatientMapper patientMapper;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private final JwtService jwtService;
     private final TokenRepo tokenRepo;
 
     public void RegisterPatient(RegisterPatientRequest request){
-        Patient patient = patientMapper.toPatient(request);
-        patientRepo.save(patient);
+        User patient = userMapper.createUser(request);
+        userRepository.save(patient);
     }
 
     // public void RegisterDoctor(RegisterDoctorRequest request){
@@ -46,9 +45,7 @@ public class AuthService {
             new UsernamePasswordAuthenticationToken(request.email(), request.password())
         );
 
-        BaseUser user = (BaseUser) authentication.getPrincipal();
-
-        System.out.println("user was found  !              aaaaaaaaaaaa");
+        User user = (User) authentication.getPrincipal();
 
         final String generatedToken = jwtService.generateToken(user);
     
@@ -69,7 +66,7 @@ public class AuthService {
     }
     
 
-    private void RevokeAllUserToken(BaseUser user){
+    private void RevokeAllUserToken(User user){
         List<Token> UserValidTokens = tokenRepo.findAllUserValidTokens(user.getId());
         if(UserValidTokens.isEmpty()){
             return;

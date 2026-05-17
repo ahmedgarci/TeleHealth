@@ -12,7 +12,7 @@ import com.example.demo.Appointment.Requests.CreateMeetRequest;
 import com.example.demo.Appointment.Responses.AppointmentResponse;
 import com.example.demo.Data.Entities.Appointment;
 import com.example.demo.Data.Entities.AppointmentMeet;
-import com.example.demo.Data.Entities.Patient;
+import com.example.demo.Data.Entities.User;
 import com.example.demo.Data.Enums.AppointmentStatus;
 import com.example.demo.Data.Mappers.Appointments.AppointmentMapper;
 import com.example.demo.Data.Repositories.AppointmentEntityManager;
@@ -35,7 +35,7 @@ public class AppointmentService {
 
 
     public void demandAppointment(AskForAppointmentRequest request,Authentication authentication){
-            var patient = (Patient)authentication.getPrincipal();
+            var patient = (User)authentication.getPrincipal();
             appointmentRepo.save(appointmentMapper.toAppointment(request, patient));        
     }
     
@@ -71,7 +71,7 @@ public class AppointmentService {
                     .collect(Collectors.toList());
     }
     
-    public List<AppointmentResponse> getMyConfirmedAppointments(Authentication authentication) {
+    public List<AppointmentResponse> getDoctorAppointments(Authentication authentication) {
         List<Appointment> confirmedAppointments = appointmentEntityManager.getTodayAppointments();
         return confirmedAppointments.stream()
                 .map(appointmentMapper::toAppointmentResponse)
@@ -82,10 +82,11 @@ public class AppointmentService {
     public String CreateNewMeet(Authentication authentication,CreateMeetRequest request){
        Appointment appointment = appointmentRepo.findById(request.getAppointmentId())
         .orElseThrow(()->new CustomEntityNotFoundException("appointment with id :  was not found"));
-       AppointmentMeet meet = AppointmentMeet.builder().appointment(appointment).patient(appointment.getPatient()).meetCode(generateRandomCode()).build();        
+       AppointmentMeet meet = AppointmentMeet.builder().appointment(appointment).user(appointment.getPatient()).meetCode(generateRandomCode()).build();        
        AppointmentMeet saved =meetRepo.save(meet);
        appointment.setMeet(saved);
        appointmentRepo.save(appointment);
+       
        return saved.getMeetCode();
     }
 
